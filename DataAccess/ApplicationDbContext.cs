@@ -10,6 +10,15 @@ namespace FlightDocsSystem.DataAccess.Data
 		{
 		}
 
+		public DbSet<ApplicationUser> ApplicationUsers {  get; set; }
+		public DbSet<AppRole> AppRoles { get; set; }
+		public DbSet<Docs> Docs { get; set; }
+		public DbSet<Flight> Flights { get; set; }
+		public DbSet<RoleClaimsDocs> RoleClaimsDocs { get; set; }
+		public DbSet<RoleClaimsType> RoleClaimsTypes { get; set; }
+		public DbSet<Models.Type> Types { get; set; }
+
+
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
