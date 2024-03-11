@@ -19,6 +19,6 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public int TypeId { get; set; }
 		[ForeignKey("TypeId")]
-		public Type Type { get; set; }
+		public DocType Type { get; set; }
 	}
 }

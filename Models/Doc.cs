@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightDocsSystem.Models
 {
-	public class Docs
+	public class Doc
 	{
 		[Key]
 		public int ID { get; set; }
@@ -23,8 +23,8 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public int TypeId { get; set; }
 		[ForeignKey("TypeId")]
-		public Type Type { get; set; }
+		public DocType Type { get; set; }
 
-		public ICollection<RoleClaimsDocs>? RoleClaimsDocs { get; set; }
+		public ICollection<RoleClaimsDoc>? RoleClaimsDocs { get; set; }
 	}
 }

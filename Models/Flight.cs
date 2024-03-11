@@ -17,6 +17,6 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public string PointOfUnLoading { get; set; } = string.Empty;
 
-		public ICollection<Docs>? Docs { get; set; }
+		public ICollection<Doc>? Docs { get; set; }
 	}
 }

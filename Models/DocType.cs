@@ -2,7 +2,7 @@
 
 namespace FlightDocsSystem.Models
 {
-	public class Type
+	public class DocType
 	{
 		[Key]
 		public int ID { get; set; }
@@ -11,7 +11,7 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public string Note { get; set; } = string.Empty;
 
-		public ICollection<Docs>? Docs { get; set; }
+		public ICollection<Doc>? Docs { get; set; }
 		public ICollection<RoleClaimsType>? RoleClaimsTypes { get; set; }
 	}
 }

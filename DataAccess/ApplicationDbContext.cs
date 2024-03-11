@@ -12,11 +12,11 @@ namespace FlightDocsSystem.DataAccess.Data
 
 		public DbSet<ApplicationUser> ApplicationUsers {  get; set; }
 		public DbSet<AppRole> AppRoles { get; set; }
-		public DbSet<Docs> Docs { get; set; }
+		public DbSet<Doc> Docs { get; set; }
 		public DbSet<Flight> Flights { get; set; }
-		public DbSet<RoleClaimsDocs> RoleClaimsDocs { get; set; }
+		public DbSet<RoleClaimsDoc> RoleClaimsDocs { get; set; }
 		public DbSet<RoleClaimsType> RoleClaimsTypes { get; set; }
-		public DbSet<Models.Type> Types { get; set; }
+		public DbSet<Models.DocType> DocTypes { get; set; }
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
