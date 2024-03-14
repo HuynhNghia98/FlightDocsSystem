@@ -8,6 +8,11 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using System.Text.Json.Serialization;
 using System.Text;
+using FlightDocsSystem.DataAccess.Repository.IRepository;
+using FlightDocsSystem.DataAccess.Repository;
+using FlightDocsSystem.Services.Docs.Interface;
+using FlightDocsSystem.Services.Docs;
+using FlightDocsSystem.DataAccess.DbInitializer;
 
 namespace FlightDocsSystem
 {
@@ -103,6 +108,11 @@ namespace FlightDocsSystem
 			//builder.Services.AddCors();
 			builder.Services.AddCors();
 
+			//register services
+			builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+			builder.Services.AddScoped<IDbInitializer, DbInitializer>();
+			builder.Services.AddScoped<IFlightService, FlightService>();
+
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
@@ -122,7 +132,18 @@ namespace FlightDocsSystem
 			app.UseAuthorization();
 			app.MapControllers();
 
+			SeedData();
+
 			app.Run();
+
+			void SeedData()
+			{
+				using (var scope = app.Services.CreateScope())
+				{
+					var dbInititalizer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
+					dbInititalizer.Initializer();
+				}
+			}
 		}
 	}
 }

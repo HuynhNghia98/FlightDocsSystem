@@ -6,6 +6,7 @@
 		IAppRoleRepository AppRole { get; }
 		IDocRepository Doc { get; }
 		IDocTypeRepository DocType { get; }
+		ICategoryRepository Category { get; }
 		IFlightRepository Flight { get; }
 		IRoleClaimsDocRepository RoleClaimsDoc { get; }
 		IRoleClaimsTypeRepository RoleClaimsType { get; }

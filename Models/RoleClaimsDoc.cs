@@ -6,7 +6,7 @@ namespace FlightDocsSystem.Models
 	public class RoleClaimsDoc
 	{
 		[Key]
-		public int ID { get; set; }
+		public int Id { get; set; }
 
 		[Required]
 		public string AppRoleId { get; set; }

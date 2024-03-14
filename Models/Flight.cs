@@ -1,11 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlightDocsSystem.Models
 {
 	public class Flight
 	{
 		[Key]
-		public int ID { get; set; }
+		public int Id { get; set; }
 		[Required]
 		public string FlightNo { get; set; } = string.Empty;
 		[Required]
@@ -16,6 +17,11 @@ namespace FlightDocsSystem.Models
 		public string PointOfLoading { get; set; } = string.Empty;
 		[Required]
 		public string PointOfUnLoading { get; set; } = string.Empty;
+
+		[Required]
+		public int CategoryId { get; set; }
+		[ForeignKey("CategoryId")]
+		public Category Category { get; set; }
 
 		public ICollection<Doc>? Docs { get; set; }
 	}

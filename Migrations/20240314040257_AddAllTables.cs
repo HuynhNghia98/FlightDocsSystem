@@ -10,20 +10,31 @@ namespace FlightDocsSystem.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Flights",
+                name: "Categories",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FlightNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Route = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PointOfLoading = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PointOfUnLoading = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Details = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Flights", x => x.ID);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DocTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocTypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -39,20 +50,6 @@ namespace FlightDocsSystem.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Types",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Types", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -85,6 +82,30 @@ namespace FlightDocsSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Flights",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FlightNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Route = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PointOfLoading = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PointOfUnLoading = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Flights", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Flights_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleClaims",
                 columns: table => new
                 {
@@ -106,42 +127,10 @@ namespace FlightDocsSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Docs",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Version = table.Column<double>(type: "float", nullable: false),
-                    File = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FlightId = table.Column<int>(type: "int", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Docs", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK_Docs_Flights_FlightId",
-                        column: x => x.FlightId,
-                        principalTable: "Flights",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Docs_Types_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "Types",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RoleClaimsTypes",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IsModify = table.Column<bool>(type: "bit", nullable: false),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
@@ -150,18 +139,18 @@ namespace FlightDocsSystem.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleClaimsTypes", x => x.ID);
+                    table.PrimaryKey("PK_RoleClaimsTypes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RoleClaimsTypes_DocTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "DocTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoleClaimsTypes_Roles_AppRoleId",
                         column: x => x.AppRoleId,
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RoleClaimsTypes_Types_TypeId",
-                        column: x => x.TypeId,
-                        principalTable: "Types",
-                        principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -251,22 +240,54 @@ namespace FlightDocsSystem.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Docs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Version = table.Column<double>(type: "float", nullable: false),
+                    File = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    FlightId = table.Column<int>(type: "int", nullable: false),
+                    TypeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Docs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Docs_DocTypes_TypeId",
+                        column: x => x.TypeId,
+                        principalTable: "DocTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Docs_Flights_FlightId",
+                        column: x => x.FlightId,
+                        principalTable: "Flights",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RoleClaimsDocs",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AppRoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DocsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleClaimsDocs", x => x.ID);
+                    table.PrimaryKey("PK_RoleClaimsDocs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_RoleClaimsDocs_Docs_DocsId",
                         column: x => x.DocsId,
                         principalTable: "Docs",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_RoleClaimsDocs_Roles_AppRoleId",
@@ -285,6 +306,11 @@ namespace FlightDocsSystem.Migrations
                 name: "IX_Docs_TypeId",
                 table: "Docs",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Flights_CategoryId",
+                table: "Flights",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -379,10 +405,13 @@ namespace FlightDocsSystem.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
+                name: "DocTypes");
+
+            migrationBuilder.DropTable(
                 name: "Flights");
 
             migrationBuilder.DropTable(
-                name: "Types");
+                name: "Categories");
         }
     }
 }

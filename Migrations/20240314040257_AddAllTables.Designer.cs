@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightDocsSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240307030213_AddAllTables")]
+    [Migration("20240314040257_AddAllTables")]
     partial class AddAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,13 +104,33 @@ namespace FlightDocsSystem.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Docs", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.Category", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.Doc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
@@ -137,7 +157,7 @@ namespace FlightDocsSystem.Migrations
                     b.Property<double>("Version")
                         .HasColumnType("float");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("FlightId");
 
@@ -146,13 +166,37 @@ namespace FlightDocsSystem.Migrations
                     b.ToTable("Docs");
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Flight", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.DocType", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DocTypes");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.Flight", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -173,18 +217,20 @@ namespace FlightDocsSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
 
                     b.ToTable("Flights");
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsDocs", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsDoc", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppRoleId")
                         .IsRequired()
@@ -193,7 +239,7 @@ namespace FlightDocsSystem.Migrations
                     b.Property<int>("DocsId")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppRoleId");
 
@@ -204,11 +250,11 @@ namespace FlightDocsSystem.Migrations
 
             modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsType", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppRoleId")
                         .IsRequired()
@@ -223,34 +269,13 @@ namespace FlightDocsSystem.Migrations
                     b.Property<int>("TypeId")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppRoleId");
 
                     b.HasIndex("TypeId");
 
                     b.ToTable("RoleClaimsTypes");
-                });
-
-            modelBuilder.Entity("FlightDocsSystem.Models.Type", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Note")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.ToTable("Types");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -401,7 +426,7 @@ namespace FlightDocsSystem.Migrations
                     b.HasDiscriminator().HasValue("AppRole");
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Docs", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.Doc", b =>
                 {
                     b.HasOne("FlightDocsSystem.Models.Flight", "Flight")
                         .WithMany("Docs")
@@ -409,7 +434,7 @@ namespace FlightDocsSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlightDocsSystem.Models.Type", "Type")
+                    b.HasOne("FlightDocsSystem.Models.DocType", "Type")
                         .WithMany("Docs")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -420,7 +445,18 @@ namespace FlightDocsSystem.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsDocs", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.Flight", b =>
+                {
+                    b.HasOne("FlightDocsSystem.Models.Category", "Category")
+                        .WithMany("Flights")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsDoc", b =>
                 {
                     b.HasOne("FlightDocsSystem.Models.AppRole", "AppRole")
                         .WithMany("RoleClaimsDocs")
@@ -428,7 +464,7 @@ namespace FlightDocsSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlightDocsSystem.Models.Docs", "Docs")
+                    b.HasOne("FlightDocsSystem.Models.Doc", "Docs")
                         .WithMany("RoleClaimsDocs")
                         .HasForeignKey("DocsId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -447,7 +483,7 @@ namespace FlightDocsSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlightDocsSystem.Models.Type", "Type")
+                    b.HasOne("FlightDocsSystem.Models.DocType", "Type")
                         .WithMany("RoleClaimsTypes")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -509,21 +545,26 @@ namespace FlightDocsSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Docs", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.Category", b =>
+                {
+                    b.Navigation("Flights");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.Doc", b =>
                 {
                     b.Navigation("RoleClaimsDocs");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.DocType", b =>
+                {
+                    b.Navigation("Docs");
+
+                    b.Navigation("RoleClaimsTypes");
                 });
 
             modelBuilder.Entity("FlightDocsSystem.Models.Flight", b =>
                 {
                     b.Navigation("Docs");
-                });
-
-            modelBuilder.Entity("FlightDocsSystem.Models.Type", b =>
-                {
-                    b.Navigation("Docs");
-
-                    b.Navigation("RoleClaimsTypes");
                 });
 
             modelBuilder.Entity("FlightDocsSystem.Models.AppRole", b =>
