@@ -3,7 +3,7 @@ using FlightDocsSystem.Models;
 using FlightDocsSystem.Models.DTO.Flight;
 using FlightDocsSystem.Services.Docs.Interface;
 using Microsoft.EntityFrameworkCore;
-using SignupSystem.Models.Response;
+using FlightDocsSystem.Models.Response;
 
 namespace FlightDocsSystem.Services.Docs
 {
@@ -45,9 +45,9 @@ namespace FlightDocsSystem.Services.Docs
 		{
 			ApiResponse<GetFilghtsResponseDTO> res = new();
 
-			var flightsInDb = await _unitOfWork.Flight.GetAll().ToListAsync();
+			var flightInDb = await _unitOfWork.Flight.GetAll().ToListAsync();
 
-			var filteredFlights = flightsInDb;
+			var filteredFlights = flightInDb;
 
 			if (flightId > 0 && flightId != null)
 			{
@@ -70,9 +70,9 @@ namespace FlightDocsSystem.Services.Docs
 
 		public async Task<ApiResponse<object>> AddFilght(AddFlightRequestDTO model)
 		{
-			var flightsInDb = await _unitOfWork.Flight.Get(x => x.FlightNo.Equals(model.FlightNo), true).FirstOrDefaultAsync();
+			var flightInDb = await _unitOfWork.Flight.Get(x => x.FlightNo.Equals(model.FlightNo), true).FirstOrDefaultAsync();
 
-			if (flightsInDb != null)
+			if (flightInDb != null)
 			{
 				_res.IsSuccess = false;
 				_res.Errors = new Dictionary<string, List<string>>
@@ -101,9 +101,9 @@ namespace FlightDocsSystem.Services.Docs
 
 		public async Task<ApiResponse<object>> UpdateFilght(int flightId, UpdateFilghtRequestDTO model)
 		{
-			var flightsInDbWithId = await _unitOfWork.Flight.Get(x => x.Id == flightId, true).FirstOrDefaultAsync();
+			var flightInDbWithId = await _unitOfWork.Flight.Get(x => x.Id == flightId, true).FirstOrDefaultAsync();
 
-			if (flightsInDbWithId == null)
+			if (flightInDbWithId == null)
 			{
 				_res.IsSuccess = false;
 				_res.Errors = new Dictionary<string, List<string>>
@@ -115,7 +115,7 @@ namespace FlightDocsSystem.Services.Docs
 
 			var flightsInDbWithNo = await _unitOfWork.Flight.Get(x => x.FlightNo.Equals(model.FlightNo), true).FirstOrDefaultAsync();
 
-			if (flightsInDbWithNo != null && flightsInDbWithNo.Id != flightsInDbWithId.Id)
+			if (flightsInDbWithNo != null && flightsInDbWithNo.Id != flightInDbWithId.Id)
 			{
 				_res.IsSuccess = false;
 				_res.Errors = new Dictionary<string, List<string>>
@@ -125,14 +125,14 @@ namespace FlightDocsSystem.Services.Docs
 				return _res;
 			}
 
-			flightsInDbWithId.FlightNo = model.FlightNo;
-			flightsInDbWithId.Date = model.FlightDay;
-			flightsInDbWithId.Route = model.Route;
-			flightsInDbWithId.PointOfLoading = model.PointOfLoading;
-			flightsInDbWithId.PointOfUnLoading = model.PointOfUnLoading;
-			flightsInDbWithId.CategoryId = model.CategoryId;
+			flightInDbWithId.FlightNo = model.FlightNo;
+			flightInDbWithId.Date = model.FlightDay;
+			flightInDbWithId.Route = model.Route;
+			flightInDbWithId.PointOfLoading = model.PointOfLoading;
+			flightInDbWithId.PointOfUnLoading = model.PointOfUnLoading;
+			flightInDbWithId.CategoryId = model.CategoryId;
 
-			_unitOfWork.Flight.Update(flightsInDbWithId);
+			_unitOfWork.Flight.Update(flightInDbWithId);
 			_unitOfWork.Save();
 
 			_res.Messages = "Đã cập nhật chuyến bay thành công.";
@@ -141,9 +141,9 @@ namespace FlightDocsSystem.Services.Docs
 
 		public async Task<ApiResponse<object>> DeleteFilght(int flightId)
 		{
-			var flightsInDbWithId = await _unitOfWork.Flight.Get(x => x.Id == flightId, true).FirstOrDefaultAsync();
+			var flightInDbWithId = await _unitOfWork.Flight.Get(x => x.Id == flightId, true).FirstOrDefaultAsync();
 
-			if (flightsInDbWithId == null)
+			if (flightInDbWithId == null)
 			{
 				_res.IsSuccess = false;
 				_res.Errors = new Dictionary<string, List<string>>
@@ -153,7 +153,7 @@ namespace FlightDocsSystem.Services.Docs
 				return _res;
 			}
 
-			_unitOfWork.Flight.Remove(flightsInDbWithId);
+			_unitOfWork.Flight.Remove(flightInDbWithId);
 			_unitOfWork.Save();
 
 			_res.Messages = "Đã xóa chuyến bay thành công.";

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SignupSystem.Models.Response
+namespace FlightDocsSystem.Models.Response
 {
 	public class ApiResponse<T> where T : new()
 	{

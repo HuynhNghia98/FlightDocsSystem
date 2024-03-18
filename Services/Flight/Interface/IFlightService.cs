@@ -1,5 +1,5 @@
 ﻿using FlightDocsSystem.Models.DTO.Flight;
-using SignupSystem.Models.Response;
+using FlightDocsSystem.Models.Response;
 
 namespace FlightDocsSystem.Services.Docs.Interface
 {
