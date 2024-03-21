@@ -36,9 +36,18 @@ namespace FlightDocsSystem.DataAccess.DbInitializer
 			//Tạo Role nếu không có
 			if (!_roleManager.RoleExistsAsync(SD.Role_Admin).GetAwaiter().GetResult())
 			{
-				_roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
-				_roleManager.CreateAsync(new IdentityRole(SD.Role_Pilot)).GetAwaiter().GetResult();
-				_roleManager.CreateAsync(new IdentityRole(SD.Role_Crew)).GetAwaiter().GetResult();
+				List<AppRole> newAppRoleList = new()
+				{
+					new AppRole(){Name = SD.Role_Admin,NormalizedName = SD.Role_Admin.ToLower(),Note = SD.Role_Admin },
+					new AppRole(){Name = SD.Role_Pilot,NormalizedName = SD.Role_Pilot.ToLower(),Note = SD.Role_Pilot },
+					new AppRole(){Name = SD.Role_Crew,NormalizedName = SD.Role_Crew.ToLower(),Note = SD.Role_Crew },
+				};
+
+				foreach (AppRole appRole in newAppRoleList)
+				{
+					_unitOfWork.AppRole.AddAsync(appRole);
+				}
+				_unitOfWork.SaveAsync();
 
 				//Tạo tài khoản admin
 				var newUser = new ApplicationUser

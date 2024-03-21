@@ -419,6 +419,9 @@ namespace FlightDocsSystem.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityRole");
 
+                    b.Property<string>("Note")
+                        .HasColumnType("nvarchar(max)");
+
                     b.ToTable("Roles");
 
                     b.HasDiscriminator().HasValue("AppRole");

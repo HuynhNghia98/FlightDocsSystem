@@ -15,6 +15,8 @@ using FlightDocsSystem.Services.Docs;
 using FlightDocsSystem.DataAccess.DbInitializer;
 using FlightDocsSystem.Services.Auth.Innerfaces;
 using FlightDocsSystem.Services.Auth;
+using FlightDocsSystem.Services.User.Interfaces;
+using FlightDocsSystem.Services.User;
 
 namespace FlightDocsSystem
 {
@@ -115,6 +117,7 @@ namespace FlightDocsSystem
 			builder.Services.AddScoped<IDbInitializer, DbInitializer>();
 			builder.Services.AddScoped<IFlightService, FlightService>();
 			builder.Services.AddScoped<IAuthServices, AuthServices>();
+			builder.Services.AddScoped<IUserServices, UserServices>();
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
