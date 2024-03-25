@@ -12,9 +12,9 @@ namespace FlightDocsSystem.DataAccess.DbInitializer
 		private readonly ApplicationDbContext _db;
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly RoleManager<AppRole> _roleManager;
 
-		public DbInitializer(ApplicationDbContext db, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IUnitOfWork unitOfWork)
+		public DbInitializer(ApplicationDbContext db, UserManager<ApplicationUser> userManager, RoleManager<AppRole> roleManager, IUnitOfWork unitOfWork)
 		{
 			_db = db;
 			_userManager = userManager;

@@ -133,8 +133,8 @@ namespace FlightDocsSystem.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IsModify = table.Column<bool>(type: "bit", nullable: false),
-                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppRoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TypeId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -278,6 +278,8 @@ namespace FlightDocsSystem.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AppRoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DocsId = table.Column<int>(type: "int", nullable: false)
                 },

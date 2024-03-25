@@ -17,6 +17,8 @@ using FlightDocsSystem.Services.Auth.Innerfaces;
 using FlightDocsSystem.Services.Auth;
 using FlightDocsSystem.Services.User.Interfaces;
 using FlightDocsSystem.Services.User;
+using FlightDocsSystem.Services.DocType.Interfaces;
+using FlightDocsSystem.Services.DocType;
 
 namespace FlightDocsSystem
 {
@@ -74,7 +76,7 @@ namespace FlightDocsSystem
 				(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 			//identity dbcontext
-			builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+			builder.Services.AddIdentity<ApplicationUser, AppRole>()
 			.AddEntityFrameworkStores<ApplicationDbContext>()
 			.AddDefaultTokenProviders();
 
@@ -118,6 +120,7 @@ namespace FlightDocsSystem
 			builder.Services.AddScoped<IFlightService, FlightService>();
 			builder.Services.AddScoped<IAuthServices, AuthServices>();
 			builder.Services.AddScoped<IUserServices, UserServices>();
+			builder.Services.AddScoped<IDocTypeServices, DocTypeServices>();
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();

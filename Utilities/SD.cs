@@ -8,5 +8,10 @@ namespace FlightDocsSystem.Utilities
 		public const string Role_Admin = "Admin";
 		public const string Role_Pilot = "Pilot";
 		public const string Role_Crew = "Crew";
+
+		//function name
+		public const string Claim_Modify = "Modify";
+		public const string Claim_Read = "Read";
+		public const string Claim_NoPermission = "NoPermission";
 	}
 }

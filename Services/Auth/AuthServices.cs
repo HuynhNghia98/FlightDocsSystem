@@ -18,13 +18,13 @@ namespace FlightDocsSystem.Services.Auth
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ApplicationDbContext _db;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly RoleManager<AppRole> _roleManager;
 		public ApiResponse<object> _res;
 		private string SecretKey;
 
 		public AuthServices(IUnitOfWork unitOfWork,
 			ApplicationDbContext db,
-			RoleManager<IdentityRole> roleManager,
+			RoleManager<AppRole> roleManager,
 			UserManager<ApplicationUser> userManager,
 			IConfiguration configuration)
 		{

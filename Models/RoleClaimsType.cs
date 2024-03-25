@@ -8,9 +8,9 @@ namespace FlightDocsSystem.Models
 		[Key]
 		public int Id { get; set; }
 		[Required]
-		public bool IsModify { get; set; } = false;
+		public string Type { get; set; } = string.Empty;
 		[Required]
-		public bool IsRead { get; set; } = false;
+		public string Value { get; set; } = string.Empty;
 
 		[Required]
 		public string AppRoleId { get; set; }
@@ -19,6 +19,6 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public int TypeId { get; set; }
 		[ForeignKey("TypeId")]
-		public DocType Type { get; set; }
+		public DocType DocType { get; set; }
 	}
 }

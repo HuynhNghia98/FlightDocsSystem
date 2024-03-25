@@ -16,9 +16,9 @@ namespace FlightDocsSystem.Services.User
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ApplicationDbContext _db;
 		private readonly UserManager<ApplicationUser> _userManager;
-		private readonly RoleManager<IdentityRole> _roleManager;
+		private readonly RoleManager<AppRole> _roleManager;
 		private ApiResponse<object> _res;
-		public UserServices(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext db)
+		public UserServices(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, RoleManager<AppRole> roleManager, ApplicationDbContext db)
 		{
 			_unitOfWork = unitOfWork;
 			_roleManager = roleManager;

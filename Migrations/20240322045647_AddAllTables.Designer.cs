@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightDocsSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240321042346_AddAllTables")]
+    [Migration("20240322045647_AddAllTables")]
     partial class AddAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,6 +239,14 @@ namespace FlightDocsSystem.Migrations
                     b.Property<int>("DocsId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AppRoleId");
@@ -260,14 +268,16 @@ namespace FlightDocsSystem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<bool>("IsModify")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TypeId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -486,7 +496,7 @@ namespace FlightDocsSystem.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FlightDocsSystem.Models.DocType", "Type")
+                    b.HasOne("FlightDocsSystem.Models.DocType", "DocType")
                         .WithMany("RoleClaimsTypes")
                         .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -494,7 +504,7 @@ namespace FlightDocsSystem.Migrations
 
                     b.Navigation("AppRole");
 
-                    b.Navigation("Type");
+                    b.Navigation("DocType");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
