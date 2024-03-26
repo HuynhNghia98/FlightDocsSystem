@@ -4,15 +4,15 @@ using FlightDocsSystem.Models;
 
 namespace FlightDocsSystem.DataAccess.Repository
 {
-	public class CategoryRepository : Repository<Category>, ICategoryRepository
+	public class DocItemRepository : Repository<DocItem>, IDocItemRepository
 	{
-		public CategoryRepository(ApplicationDbContext db) : base(db)
+		public DocItemRepository(ApplicationDbContext db) : base(db)
 		{
 		}
 
-		public void Update(Category category)
+		public void Update(DocItem docItem)
 		{
-			_db.Update(category);
+			_db.Update(docItem);
 		}
 	}
 }

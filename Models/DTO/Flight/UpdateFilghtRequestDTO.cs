@@ -14,7 +14,5 @@ namespace FlightDocsSystem.Models.DTO.Flight
 		public string PointOfLoading { get; set; } = string.Empty;
 		[Required(ErrorMessage = "Nhập điểm dỡ hàng")]
 		public string PointOfUnLoading { get; set; } = string.Empty;
-		[Required(ErrorMessage = "Nhập loại chuyến bay")]
-		public int CategoryId { get; set; }
 	}
 }

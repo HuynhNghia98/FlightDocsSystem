@@ -10,11 +10,10 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public string Name { get; set; } = string.Empty;
 		[Required]
-		public double Version { get; set; }
-		public string? File { get; set; } = string.Empty;
+		public byte[] File { get; set; }
+		[Required]
+		public string FileExtension { get; set; } = string.Empty;
 		public string? Note { get; set; } = string.Empty;
-		public DateTime CreateDate { get; set; } = DateTime.Now;
-		public DateTime UpdateDate { get; set; } = DateTime.Now;
 
 		[Required]
 		public int FlightId { get; set; }
@@ -26,5 +25,6 @@ namespace FlightDocsSystem.Models
 		public DocType Type { get; set; }
 
 		public ICollection<RoleClaimsDoc>? RoleClaimsDocs { get; set; }
+		public ICollection<DocItem>? DocItems { get; set; }
 	}
 }

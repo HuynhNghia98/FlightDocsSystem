@@ -60,7 +60,7 @@ namespace FlightDocsSystem.Controllers.DocType
 			}
 		}
 
-		[HttpPut("UpdateDocTypet/{id}")]
+		[HttpPut("UpdateDocType/{id}")]
 		public async Task<IActionResult> UpdateDocType(int id, [FromBody] AddOrUpdateDocTypeRequestDTO model)
 		{
 			var result = await _docType.UpdateDocType(id, model);

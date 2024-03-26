@@ -19,6 +19,10 @@ using FlightDocsSystem.Services.User.Interfaces;
 using FlightDocsSystem.Services.User;
 using FlightDocsSystem.Services.DocType.Interfaces;
 using FlightDocsSystem.Services.DocType;
+using FlightDocsSystem.Services.Auth.Interfaces;
+using FlightDocsSystem.Utilities;
+using FlightDocsSystem.Services.Doc.Interfaces;
+using FlightDocsSystem.Services.Doc;
 
 namespace FlightDocsSystem
 {
@@ -91,6 +95,7 @@ namespace FlightDocsSystem
 			});
 
 			//truyền dữ liệu từ appsetting vào trong lớp MailSettings theo đúng tên các thuộc tính.
+			builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 			//config authentication
 			var key = builder.Configuration.GetValue<string>("ApiSettings:SecretKey");
@@ -121,6 +126,9 @@ namespace FlightDocsSystem
 			builder.Services.AddScoped<IAuthServices, AuthServices>();
 			builder.Services.AddScoped<IUserServices, UserServices>();
 			builder.Services.AddScoped<IDocTypeServices, DocTypeServices>();
+			builder.Services.AddScoped<IMailService, MailService>();
+			builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+			builder.Services.AddScoped<IDocServices, DocServices>();
 
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();

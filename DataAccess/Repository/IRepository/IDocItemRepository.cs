@@ -2,8 +2,8 @@
 
 namespace FlightDocsSystem.DataAccess.Repository.IRepository
 {
-	public interface ICategoryRepository : IRepository<Category>
+	public interface IDocItemRepository : IRepository<DocItem>
 	{
-		void Update(Category category);
+		void Update(DocItem docItem);
 	}
 }

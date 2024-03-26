@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightDocsSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240322045647_AddAllTables")]
+    [Migration("20240326083916_AddAllTables")]
     partial class AddAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -104,26 +104,6 @@ namespace FlightDocsSystem.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Details")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
-                });
-
             modelBuilder.Entity("FlightDocsSystem.Models.Doc", b =>
                 {
                     b.Property<int>("Id")
@@ -132,10 +112,12 @@ namespace FlightDocsSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("datetime2");
+                    b.Property<byte[]>("File")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
 
-                    b.Property<string>("File")
+                    b.Property<string>("FileExtension")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("FlightId")
@@ -151,12 +133,6 @@ namespace FlightDocsSystem.Migrations
                     b.Property<int>("TypeId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdateDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Version")
-                        .HasColumnType("float");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FlightId");
@@ -164,6 +140,36 @@ namespace FlightDocsSystem.Migrations
                     b.HasIndex("TypeId");
 
                     b.ToTable("Docs");
+                });
+
+            modelBuilder.Entity("FlightDocsSystem.Models.DocItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DocId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("Version")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DocItems");
                 });
 
             modelBuilder.Entity("FlightDocsSystem.Models.DocType", b =>
@@ -195,9 +201,6 @@ namespace FlightDocsSystem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -218,8 +221,6 @@ namespace FlightDocsSystem.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.ToTable("Flights");
                 });
@@ -458,15 +459,23 @@ namespace FlightDocsSystem.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Flight", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.DocItem", b =>
                 {
-                    b.HasOne("FlightDocsSystem.Models.Category", "Category")
-                        .WithMany("Flights")
-                        .HasForeignKey("CategoryId")
+                    b.HasOne("FlightDocsSystem.Models.Doc", "Doc")
+                        .WithMany("DocItems")
+                        .HasForeignKey("DocId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.HasOne("FlightDocsSystem.Models.ApplicationUser", "User")
+                        .WithMany("DocItems")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Doc");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("FlightDocsSystem.Models.RoleClaimsDoc", b =>
@@ -558,13 +567,15 @@ namespace FlightDocsSystem.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("FlightDocsSystem.Models.Category", b =>
+            modelBuilder.Entity("FlightDocsSystem.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Flights");
+                    b.Navigation("DocItems");
                 });
 
             modelBuilder.Entity("FlightDocsSystem.Models.Doc", b =>
                 {
+                    b.Navigation("DocItems");
+
                     b.Navigation("RoleClaimsDocs");
                 });
 

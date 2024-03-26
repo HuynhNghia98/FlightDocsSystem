@@ -59,11 +59,6 @@ namespace FlightDocsSystem.Services.Docs
 				filteredFlights = filteredFlights.Where(x => x.Date == date).ToList();
 			}
 
-			if (categoryId > 0 && categoryId != null)
-			{
-				filteredFlights = filteredFlights.Where(x => x.CategoryId == categoryId).ToList();
-			}
-
 			res.Result.Flights = filteredFlights;
 			return res;
 		}
@@ -89,7 +84,6 @@ namespace FlightDocsSystem.Services.Docs
 				Route = model.Route,
 				PointOfLoading = model.PointOfLoading,
 				PointOfUnLoading = model.PointOfUnLoading,
-				CategoryId = model.CategoryId,
 			};
 
 			_unitOfWork.Flight.Add(newFlight);
@@ -130,7 +124,6 @@ namespace FlightDocsSystem.Services.Docs
 			flightInDbWithId.Route = model.Route;
 			flightInDbWithId.PointOfLoading = model.PointOfLoading;
 			flightInDbWithId.PointOfUnLoading = model.PointOfUnLoading;
-			flightInDbWithId.CategoryId = model.CategoryId;
 
 			_unitOfWork.Flight.Update(flightInDbWithId);
 			_unitOfWork.Save();

@@ -18,5 +18,7 @@ namespace FlightDocsSystem.Models
 
 		[NotMapped]
 		public string Role { get; set; } = string.Empty;
+
+		public ICollection<DocItem>? DocItems { get; set; }
 	}
 }

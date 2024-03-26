@@ -63,15 +63,6 @@ namespace FlightDocsSystem.DataAccess.DbInitializer
 
 				var user = _db.ApplicationUsers.FirstOrDefault(x => x.Id == newUser.Id);
 				_userManager.AddToRoleAsync(user, SD.Role_Admin).GetAwaiter().GetResult();
-
-				//Tạo category
-				Category newCategory = new()
-				{
-					Name = "Loại chuyến bay 1",
-					Details = ""
-				};
-				_unitOfWork.Category.Add(newCategory);
-				_unitOfWork.Save();
 			}
 			return;
 		}

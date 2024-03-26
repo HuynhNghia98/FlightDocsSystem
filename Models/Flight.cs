@@ -18,11 +18,6 @@ namespace FlightDocsSystem.Models
 		[Required]
 		public string PointOfUnLoading { get; set; } = string.Empty;
 
-		[Required]
-		public int CategoryId { get; set; }
-		[ForeignKey("CategoryId")]
-		public Category Category { get; set; }
-
 		public ICollection<Doc>? Docs { get; set; }
 	}
 }
