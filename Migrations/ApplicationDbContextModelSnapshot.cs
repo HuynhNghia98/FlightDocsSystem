@@ -49,10 +49,10 @@ namespace FlightDocsSystem.Migrations
                     b.Property<bool?>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsCrew")
+                    b.Property<bool?>("IsEmployee")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsPilot")
+                    b.Property<bool?>("IsOwner")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")

@@ -23,5 +23,9 @@ namespace FlightDocsSystem.Services.User.Interfaces
 		public Task<ApiResponse<object>> LockUsersAsync(LockOrUnlockUsersRequestDTO model);
 		public Task<ApiResponse<object>> UnLockUserAsync(string userId);
 		public Task<ApiResponse<object>> UnLockUsersAsync(LockOrUnlockUsersRequestDTO model);
+
+		// set owner
+		public Task<ApiResponse<object>> SetOwnerAsync(SetOwnerRequestDTO model);
+
 	}
 }

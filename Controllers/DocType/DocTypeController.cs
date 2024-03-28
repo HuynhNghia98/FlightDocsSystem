@@ -1,11 +1,14 @@
 ﻿using FlightDocsSystem.Models.DTO.DocType;
 using FlightDocsSystem.Services.DocType.Interfaces;
+using FlightDocsSystem.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightDocsSystem.Controllers.DocType
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class DocTypeController : ControllerBase
 	{
 		private readonly IDocTypeServices _docType;

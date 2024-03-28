@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FlightDocsSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240326083916_AddAllTables")]
+    [Migration("20240327031844_AddAllTables")]
     partial class AddAllTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,10 +51,10 @@ namespace FlightDocsSystem.Migrations
                     b.Property<bool?>("IsAdmin")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsCrew")
+                    b.Property<bool?>("IsEmployee")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsPilot")
+                    b.Property<bool?>("IsOwner")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")

@@ -1,11 +1,14 @@
 ﻿using FlightDocsSystem.Models.DTO.User;
 using FlightDocsSystem.Services.User.Interfaces;
+using FlightDocsSystem.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightDocsSystem.Controllers.User
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class UserController : ControllerBase
 	{
 		private readonly IUserServices _user;
@@ -218,6 +221,21 @@ namespace FlightDocsSystem.Controllers.User
 		public async Task<IActionResult> UnLockUsers([FromForm] LockOrUnlockUsersRequestDTO model)
 		{
 			var result = await _user.UnLockUsersAsync(model);
+
+			if (result.IsSuccess)
+			{
+				return Ok(result);
+			}
+			else
+			{
+				return BadRequest(result);
+			}
+		}
+
+		[HttpPost("SetOwner")]
+		public async Task<IActionResult> SetOwner([FromForm] SetOwnerRequestDTO model)
+		{
+			var result = await _user.SetOwnerAsync(model);
 
 			if (result.IsSuccess)
 			{

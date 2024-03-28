@@ -50,7 +50,7 @@ namespace FlightDocsSystem.Services.User
 		{
 			ApiResponse<ApplicationUser> res = new();
 
-			var userInDb = await _unitOfWork.ApplicationUser.GetAll().FirstOrDefaultAsync();
+			var userInDb = await _unitOfWork.ApplicationUser.Get(x => x.Id.Equals(userId), true).FirstOrDefaultAsync();
 
 			if (userInDb == null)
 			{
@@ -259,7 +259,10 @@ namespace FlightDocsSystem.Services.User
 		{
 			ApiResponse<GetRolesResponseDTO> res = new();
 
-			var roles = await _unitOfWork.AppRole.GetAll().ToListAsync();
+			var roles = await _unitOfWork.AppRole.GetAll()
+				.Include(x => x.RoleClaimsTypes)
+				.Include(x => x.RoleClaimsDocs)
+				.ToListAsync();
 
 			res.Result.Roles = roles;
 			return res;
@@ -481,6 +484,87 @@ namespace FlightDocsSystem.Services.User
 			return _res;
 		}
 
+		//set owner
+		public async Task<ApiResponse<object>> SetOwnerAsync(SetOwnerRequestDTO model)
+		{
+			// láy ra user
+			var userInDb = await _unitOfWork.ApplicationUser
+				.Get(x => x.Id.Equals(model.UserId), true)
+				.FirstOrDefaultAsync();
 
+			if (userInDb == null)
+			{
+				_res.Errors = new Dictionary<string, List<string>>
+					{
+						{ nameof(model.UserId), new List<string> { $"Không tìm thấy người dùng" }}
+					};
+				_res.IsSuccess = false;
+				return _res;
+			}
+
+			// kiểm tra mật khẩu tài khoản admin
+			var adminInDb = await _unitOfWork.ApplicationUser
+				.Get(x => x.Id.Equals(model.UserIdOfAdmin), true)
+				.FirstOrDefaultAsync();
+
+			if (adminInDb == null)
+			{
+				_res.Errors = new Dictionary<string, List<string>>
+					{
+						{ nameof(model.UserIdOfAdmin), new List<string> { $"Không tìm thấy admin" }}
+					};
+				_res.IsSuccess = false;
+				return _res;
+			}
+
+			var result = _userManager.CheckPasswordAsync(adminInDb, model.Password).GetAwaiter().GetResult();
+
+			if (!result)
+			{
+				_res.Errors = new Dictionary<string, List<string>>
+					{
+						{ nameof(model.Password), new List<string> { $"Sai mật khẩu" }}
+					};
+				_res.IsSuccess = false;
+				return _res;
+			}
+
+			// Lấy thông tin owner hiện tại
+			var ownerInDb = await _unitOfWork.ApplicationUser
+				.Get(x => x.IsOwner == true, true)
+				.FirstOrDefaultAsync();
+
+			if (ownerInDb != null)
+			{
+				// Chuyển vai trò của owner hiện tại thành nhân viên
+				ownerInDb.IsOwner = false;
+				ownerInDb.IsEmployee = true;
+				_unitOfWork.ApplicationUser.Update(ownerInDb);
+
+				// Xóa vai trò owner cũ và thêm vai trò mới
+				await _userManager.RemoveFromRoleAsync(ownerInDb, SD.Role_Owner);
+				await _userManager.AddToRoleAsync(ownerInDb, SD.Role_Crew);
+			}
+			//lưu thay đổi
+			_unitOfWork.Save();
+
+			// cập nhật owner mới
+			userInDb.IsOwner = true;
+			userInDb.IsAdmin = false;
+			userInDb.IsEmployee = false;
+			_unitOfWork.ApplicationUser.Update(userInDb);
+			// lấy danh sách role của người dùng
+			var roles = await _userManager.GetRolesAsync(userInDb);
+			// Xóa vai trò cũ
+			await _userManager.RemoveFromRoleAsync(userInDb, roles.FirstOrDefault());
+			// Thay đổi vai trò thành Owner
+			await _userManager.AddToRoleAsync(userInDb, SD.Role_Owner);
+
+			//lưu thay đổi
+			_unitOfWork.Save();
+
+			_res.Messages = "Cập nhật owner thành công";
+			return _res;
+		}
 	}
 }

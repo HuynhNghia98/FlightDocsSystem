@@ -1,11 +1,14 @@
 ﻿using FlightDocsSystem.Models.DTO.Flight;
 using FlightDocsSystem.Services.Docs.Interface;
+using FlightDocsSystem.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightDocsSystem.Controllers.Flight
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize(Roles = SD.Role_Admin)]
 	public class FlightController : ControllerBase
 	{
 		private readonly IFlightService _flightService;

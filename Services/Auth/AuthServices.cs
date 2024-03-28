@@ -10,11 +10,12 @@ using System.Security.Claims;
 using System.Text;
 using FlightDocsSystem.Models.DTO.Auth;
 using FlightDocsSystem.Services.Auth.Innerfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlightDocsSystem.Services.Auth
 {
-    public class AuthServices : IAuthServices
-    {
+	public class AuthServices : IAuthServices
+	{
 		private readonly IUnitOfWork _unitOfWork;
 		private readonly ApplicationDbContext _db;
 		private readonly UserManager<ApplicationUser> _userManager;
@@ -91,17 +92,8 @@ namespace FlightDocsSystem.Services.Auth
 
 		private async Task<string> GenerateToken(ApplicationUser user)
 		{
-			//lấy danh sách role của người dùng
+			// lấy danh sách role của người dùng
 			var roles = await _userManager.GetRolesAsync(user);
-
-			// lấy userClaims
-			var userClaims = await _userManager.GetClaimsAsync(user);
-
-			//lấy role của user
-			var role = await _roleManager.FindByNameAsync(roles.FirstOrDefault());
-
-			//lấy roleClaims
-			var roleClaims = await _roleManager.GetClaimsAsync(role);
 
 			JwtSecurityTokenHandler tokenHandler = new();
 			byte[] key = Encoding.ASCII.GetBytes(SecretKey);
@@ -114,17 +106,10 @@ namespace FlightDocsSystem.Services.Auth
 				new Claim(ClaimTypes.Role,roles.FirstOrDefault())
 			};
 
-			//thêm các userClaims vào danh sách claims
-			foreach (var userClaim in userClaims)
-			{
-				claims.Add(new Claim(userClaim.Type, userClaim.Value));
-			}
+			// lấy RoleClaimsDoc
+			var roleClaimsDocs = await _unitOfWork.RoleClaimsDoc.Get(x => x.AppRole.Name.Equals(roles.FirstOrDefault()), true).ToListAsync();
 
-			//thêm các roleClaims vào danh sách claims
-			foreach (var roleClaim in roleClaims)
-			{
-				claims.Add(new Claim(roleClaim.Type, roleClaim.Value));
-			}
+			claims.AddRange(roleClaimsDocs.Select(doc => new Claim(doc.Type, doc.Value)));
 
 			//generate JWT Token
 			SecurityTokenDescriptor tokenDescriptor = new()

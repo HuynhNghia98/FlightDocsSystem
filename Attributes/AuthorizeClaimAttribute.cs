@@ -7,22 +7,22 @@ using FlightDocsSystem.Models;
 using Microsoft.EntityFrameworkCore;
 using FlightDocsSystem.DataAccess.Data;
 using System.Security.Claims;
+using FlightDocsSystem.DataAccess.Repository.IRepository;
+using FlightDocsSystem.Utilities;
 
 namespace FlightDocsSystem.Attributes
 {
 	[AttributeUsage(AttributeTargets.Method)]
 	public class AuthorizeClaimAttribute : Attribute, IAuthorizationFilter
 	{
-		private readonly List<string> _claimValueList;
-		private readonly ApplicationDbContext _dbContext;
+		private readonly string _claimValue;
 
-		public AuthorizeClaimAttribute(List<string> claimValueList, ApplicationDbContext dbContext)
+		public AuthorizeClaimAttribute(string claimValue)
 		{
-			_claimValueList = claimValueList;
-			_dbContext = dbContext;
+			_claimValue = claimValue;
 		}
 
-		public void OnAuthorization(AuthorizationFilterContext context)
+		public async void OnAuthorization(AuthorizationFilterContext context)
 		{
 			var user = context.HttpContext.User;
 
@@ -41,52 +41,31 @@ namespace FlightDocsSystem.Attributes
 				return;
 			}
 
-			// Lấy docId từ RouteData
-			var docIdString = context.HttpContext.Request.RouteValues["id"]?.ToString();
-
-			if (docIdString == null || !int.TryParse(docIdString, out int docId))
+			// kiểm tra có phải owner va admin
+			if (!roleClaim.Equals(SD.Role_Owner) && !roleClaim.Equals(SD.Role_Admin))
 			{
-				context.Result = new ForbidResult();
-				return;
-			}
+				// không phải owner
+				// Lấy docId từ RouteData
+				var docIdString = context.HttpContext.Request.RouteValues["id"]?.ToString();
 
-			// lấy docs từ db
-			var doc = _dbContext.Docs.FirstOrDefault(d => d.Id == docId);
+				// kiểm tra có claim nào có type = docId, value = claimValue
+				// nếu có value = Modify thì có toàn quyền
+				var docClaimModify = user.Claims.FirstOrDefault(c => c.Type == docIdString && c.Value == SD.Claim_Modify)?.Value;
 
-			if (doc == null)
-			{
-				context.Result = new ForbidResult();
-				return;
-			}
-			//--------------------------RoleClaimsTypes------------------------------------
-
-			bool IsAccess = false;
-
-			foreach (var claimValue in _claimValueList)
-			{
-				// truy vấn trong cơ sở dữ liệu để kiểm tra quyền
-				var hasRoleClaimsTypesAccess = _dbContext.RoleClaimsTypes
-					.Any(rct => rct.Value == claimValue && rct.Id == doc.Id && rct.AppRole.Name == roleClaim);
-
-				//--------------------------RoleClaimsDocs------------------------------------
-
-				// truy vấn trong cơ sở dữ liệu để kiểm tra quyền
-				var hasRoleClaimsDocsAccess = _dbContext.RoleClaimsDocs
-					.Any(rct => rct.Value == claimValue && rct.Id == docId && rct.AppRole.Name == roleClaim);
-
-				if (!hasRoleClaimsTypesAccess || !hasRoleClaimsDocsAccess)
+				if (docClaimModify == null)
 				{
-					IsAccess = true;
+					// nếu có value = Read thì chỉ xem
+					var docClaimRead = user.Claims.FirstOrDefault(c => c.Type == docIdString && c.Value == _claimValue)?.Value;
+
+					if (docClaimRead == null)
+					{
+						context.Result = new ForbidResult();
+						return;
+					}
 				}
 			}
 
-
-			if (!IsAccess)
-			{
-				context.Result = new ForbidResult();
-				return;
-			}
+			// là owner thì có toàn quyền
 		}
-
 	}
 }

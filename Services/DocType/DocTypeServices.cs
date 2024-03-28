@@ -83,7 +83,7 @@ namespace FlightDocsSystem.Services.DocType
 				{
 					RoleClaimsType nenwRoleClaimsType = new()
 					{
-						Type = model.Name,
+						Type = newDocType.Id.ToString(),
 						Value = item.value,
 						TypeId = newDocType.Id,
 						AppRoleId = role.Id,
@@ -142,7 +142,7 @@ namespace FlightDocsSystem.Services.DocType
 					if (roleClaimsTypeInDb != null)
 					{
 						// đã có claim, cập nhật lại
-						roleClaimsTypeInDb.Type = model.Name;
+						roleClaimsTypeInDb.Type = docTypeInDb.Id.ToString();
 						roleClaimsTypeInDb.Value = item.value;
 
 						_unitOfWork.RoleClaimsType.Update(roleClaimsTypeInDb);
@@ -152,7 +152,7 @@ namespace FlightDocsSystem.Services.DocType
 						//chưa có claim, thêm mới
 						RoleClaimsType nenwRoleClaimsType = new()
 						{
-							Type = model.Name,
+							Type = docTypeInDb.Id.ToString(),
 							Value = item.value,
 							TypeId = docTypeInDb.Id,
 							AppRoleId = role.Id,

@@ -119,7 +119,7 @@ namespace FlightDocsSystem.Services.Doc
 						{
 							var newRoleClaimDoc = new Models.RoleClaimsDoc
 							{
-								Type = roleClaimTypeInDb.Type,
+								Type = newDoc.Id.ToString(),
 								Value = roleClaimTypeInDb.Value,
 								DocsId = newDoc.Id,
 								AppRoleId = roleIndb.Id,
@@ -179,7 +179,7 @@ namespace FlightDocsSystem.Services.Doc
 			_unitOfWork.Doc.Update(docInDb);
 			_unitOfWork.Save();
 
-			var docItemsInDb = await _unitOfWork.DocItem.Get(x => x.Id == docId, true).LastOrDefaultAsync();
+			var docItemsInDb = await _unitOfWork.DocItem.Get(x => x.DocId == docId, true).OrderBy(x => x.CreateDate).LastOrDefaultAsync();
 
 			if (docItemsInDb == null)
 			{
@@ -219,9 +219,9 @@ namespace FlightDocsSystem.Services.Doc
 			{
 				if (!string.IsNullOrEmpty(role))
 				{
-					var roleIndb = _roleManager.FindByNameAsync(role).GetAwaiter().GetResult();
+					var roleIndb = await _roleManager.FindByNameAsync(role);
 
-					if (role != null)
+					if (roleIndb != null)
 					{
 						// lấy ra roleClaimType của Role và DocType
 						var roleClaimTypeInDb = await _unitOfWork.RoleClaimsType
@@ -231,23 +231,15 @@ namespace FlightDocsSystem.Services.Doc
 						// ràng buộc cấp quyền cho role với DocType thì mới được cấp quyền vào tài liệu
 						if (roleClaimTypeInDb != null)
 						{
-							var roleClaimDocInDb = await _unitOfWork.RoleClaimsDoc
-								.Get(x => x.DocsId == docInDb.Id && x.AppRole.Equals(roleIndb.Id), true)
-								.FirstOrDefaultAsync();
-
-							// nếu chưa cấp quyền thì thêm vào
-							if (roleClaimDocsInDb == null)
+							var newRoleClaimDoc = new Models.RoleClaimsDoc
 							{
-								var newRoleClaimDoc = new Models.RoleClaimsDoc
-								{
-									Type = roleClaimTypeInDb.Type,
-									Value = roleClaimTypeInDb.Value,
-									DocsId = docInDb.Id,
-									AppRoleId = roleIndb.Id,
-								};
+								Type = docInDb.Id.ToString(),
+								Value = roleClaimTypeInDb.Value,
+								DocsId = docInDb.Id,
+								AppRoleId = roleIndb.Id,
+							};
 
-								_unitOfWork.RoleClaimsDoc.Update(newRoleClaimDoc);
-							}
+							_unitOfWork.RoleClaimsDoc.Add(newRoleClaimDoc);
 						}
 					}
 				}

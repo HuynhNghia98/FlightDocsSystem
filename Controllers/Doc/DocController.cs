@@ -1,11 +1,15 @@
-﻿using FlightDocsSystem.Models.DTO.Doc;
+﻿using FlightDocsSystem.Attributes;
+using FlightDocsSystem.Models.DTO.Doc;
 using FlightDocsSystem.Services.Doc.Interfaces;
+using FlightDocsSystem.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightDocsSystem.Controllers.Doc
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class DocController : ControllerBase
 	{
 		private readonly IDocServices _doc;
@@ -30,6 +34,7 @@ namespace FlightDocsSystem.Controllers.Doc
 			}
 		}
 
+		[AuthorizeClaim(SD.Claim_Read)]
 		[HttpGet("GetDoc/{id}")]
 		public async Task<IActionResult> GetDoc(int id)
 		{
@@ -60,6 +65,7 @@ namespace FlightDocsSystem.Controllers.Doc
 			}
 		}
 
+		[AuthorizeClaim(SD.Claim_Modify)]
 		[HttpPut("UpdateDoc/{id}")]
 		public async Task<IActionResult> UpdateDoc(int id, [FromForm] AddOrUpdateDocRequestDTO model)
 		{
@@ -75,6 +81,7 @@ namespace FlightDocsSystem.Controllers.Doc
 			}
 		}
 
+		[AuthorizeClaim(SD.Claim_Modify)]
 		[HttpDelete("DeleteDoc/{id}")]
 		public async Task<IActionResult> DeleteDoc(int id)
 		{
